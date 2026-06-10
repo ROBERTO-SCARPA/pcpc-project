@@ -255,6 +255,21 @@ The implementation can be validated by checking classic Game of Life patterns:
 
 A good sanity check is to compare the output of a single-process run against a multi-process run started from the same initial matrix. Since the algorithm is deterministic, the final grid should match.
 
+## Deterministic Execution Verification
+
+To verify the correctness of the parallel implementation, the simulation was executed multiple times using the same initial seed and the same number of generations while varying the number of MPI processes.
+
+The final matrices obtained with different process counts were identical, confirming that:
+
+- The domain decomposition strategy is correct.
+- Ghost-row exchanges preserve neighborhood information across process boundaries.
+- The implementation is deterministic.
+- Cell transitions between alive (`L`) and dead (`D`) states follow Conway's rules correctly.
+
+![Deterministic Execution Verification](images/validation_output.png)
+
+*Figure 1. Console output showing identical results obtained with different MPI process counts.*
+
 ## Troubleshooting
 
 Possible causes of MPI startup issues:

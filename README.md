@@ -309,9 +309,11 @@ The correctness of this MPI implementation of Conway's Game of Life was validate
 
 To evaluate the scalability of the implementation, a performance analysis was conducted using a fixed matrix size of 2000×2000. The number of MPI processes was varied from 1 to 12 (1, 2, 4, 6, 8, 10, and 12 processes).
 
+![Execution Time and Speedup](images/tempo_gamelife.png)
+
 The first figure shows the execution time and the resulting speedup. As expected, execution time decreases as the number of processes increases. The speedup curve shows a sub-linear trend due to communication overhead and synchronization costs introduced by MPI halo exchanges.
 
-![Execution Time and Speedup](images/report_gamelife.png)
+![Execution Time and Speedup](images/speedup_gamelife.png)
 
 The second figure shows the parallel efficiency of the implementation. Efficiency decreases as the number of processes increases, which is expected in a distributed-memory model where communication becomes dominant for larger process counts.
 
@@ -319,10 +321,3 @@ The second figure shows the parallel efficiency of the implementation. Efficienc
 
 Overall, the results confirm that the implementation scales well up to a moderate number of processes, while showing diminishing returns at higher process counts due to communication overhead.
 
-### Pattern scope
-
-The validation strategy focuses on representative patterns such as still lifes, oscillators, and moving objects. These cases are sufficient to exercise the core behaviors of the implementation: cell survival, reproduction, boundary interaction, and propagation across partitions.
-
-### Manual inspection
-
-The program output can also be checked manually by printing the matrix generation after generation and visually comparing the evolution with the expected behavior of Conway's Game of Life. This is especially useful for small matrices, where the progression of patterns can be directly observed in the terminal.

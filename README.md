@@ -277,7 +277,15 @@ The implementation can be validated by checking classic Game of Life patterns:
 
 A good sanity check is to compare the output of a single-process run against a multi-process run started from the same initial matrix. Since the algorithm is deterministic, the final grid should match.
 
-## Deterministic Execution Verification
+### Console Demo
+
+The following animation shows the evolution of Conway's Game of Life directly in the terminal during execution.
+
+<p align="center">
+  <img src="./assets/gamelife.gif" alt="Console demo of the MPI Game of Life execution" width="800">
+</p>
+
+### Deterministic Execution Verification
 
 To verify the correctness of the parallel implementation, the simulation was executed multiple times using the same initial seed and the same number of generations while varying the number of MPI processes.
 
@@ -309,15 +317,18 @@ The correctness of this MPI implementation of Conway's Game of Life was validate
 
 To evaluate the scalability of the implementation, a performance analysis was conducted using a fixed matrix size of 2000×2000. The number of MPI processes was varied from 1 to 12 (1, 2, 4, 6, 8, 10, and 12 processes).
 
-![Execution Time and Speedup](images/tempo_gamelife.png)
+![Execution Time ](images/tempo_gamelife.png)
 
-The first figure shows the execution time and the resulting speedup. As expected, execution time decreases as the number of processes increases. The speedup curve shows a sub-linear trend due to communication overhead and synchronization costs introduced by MPI halo exchanges.
+The first figure shows the execution time. As expected, execution time decreases as the number of processes increases.
 
-![Execution Time and Speedup](images/speedup_gamelife.png)
+![Execution Speedup](images/speedup_gamelife.png)
 
-The second figure shows the parallel efficiency of the implementation. Efficiency decreases as the number of processes increases, which is expected in a distributed-memory model where communication becomes dominant for larger process counts.
+The second figure shows the speedup. The speedup curve at first shows a linear trend, but then it starts becoming sub-linear due to communication overhead and synchronization costs.
 
 ![Parallel Efficiency](images/efficienza_gamelife.png)
+
+The third figure shows the parallel efficiency of the implementation. Efficiency decreases as the number of processes increases, which is expected in a distributed-memory model where communication becomes dominant for larger process counts.
+
 
 Overall, the results confirm that the implementation scales well up to a moderate number of processes, while showing diminishing returns at higher process counts due to communication overhead.
 

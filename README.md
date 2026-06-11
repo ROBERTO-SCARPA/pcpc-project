@@ -245,6 +245,28 @@ mpirun -np 4 --hostfile hosts ./gameoflife
 
 The matrix dimensions and the number of generations are currently controlled in the source code, so changing them requires editing `N`, `M`, and `iterazioni` and recompiling.
 
+
+## Troubleshooting
+
+Possible causes of MPI startup issues:
+
+- SSH keys are not configured correctly.
+- The hostname or internal IP in the `hosts` file is wrong.
+- OpenMPI is installed on some nodes but not on all of them.
+
+If `mpirun` cannot connect to worker nodes, make sure the same executable is present on every machine.
+
+Because `e2-micro` instances are very small, large matrices may cause slowdowns or memory pressure. Start with small and medium sizes before scaling up.
+
+## Cleanup
+
+When experiments are finished, delete the instances to avoid unnecessary charges:
+
+```bash
+gcloud compute instances delete gol-vm-1 gol-vm-2 gol-vm-3 gol-vm-4 --zone=europe-west8-b
+```
+
+
 ## Validation
 
 The implementation can be validated by checking classic Game of Life patterns:
@@ -270,34 +292,6 @@ The final matrices obtained with different process counts were identical, confir
 
 *Figure 1. Console output showing identical results obtained with different MPI process counts.*
 
-## Troubleshooting
-
-Possible causes of MPI startup issues:
-
-- SSH keys are not configured correctly.
-- The hostname or internal IP in the `hosts` file is wrong.
-- OpenMPI is installed on some nodes but not on all of them.
-
-If `mpirun` cannot connect to worker nodes, make sure the same executable is present on every machine.
-
-Because `e2-micro` instances are very small, large matrices may cause slowdowns or memory pressure. Start with small and medium sizes before scaling up.
-
-## Cleanup
-
-When experiments are finished, delete the instances to avoid unnecessary charges:
-
-```bash
-gcloud compute instances delete gol-vm-1 gol-vm-2 gol-vm-3 gol-vm-4 --zone=europe-west8-b
-```
-
-## Code Correctness and Validation Report
-
-The correctness of this MPI implementation of Conway's Game of Life was validated through deterministic pattern tests, boundary-condition checks, and comparisons between single-process and multi-process executions.
-
-### Local rule validation with classic patterns
-
-The update logic implemented in the main simulation loop was checked using well-known Game of Life structures. The Block still life remained unchanged across multiple generations, confirming the correctness of the survival rules. The Blinker oscillator alternated between its horizontal and vertical configurations as expected, while the Glider evolved by moving diagonally across the matrix according to the standard rules of the automaton.
-
 ### Validation of row decomposition and ghost-row exchange
 
 Since the matrix is partitioned by rows, the correctness of the parallel decomposition was verified by testing patterns that interact with process boundaries. Configurations placed across the split between two ranks evolved consistently, showing that the exchange of top and bottom ghost rows works correctly. This confirms that the non-blocking communication used in the worker routine preserves the neighborhood information needed to update border cells.
@@ -305,6 +299,11 @@ Since the matrix is partitioned by rows, the correctness of the parallel decompo
 ### Deterministic parallel execution
 
 For the same initial matrix and the same number of iterations, runs executed with different MPI process counts produced the same final configuration. This confirms that the implementation is deterministic and that the master-worker decomposition, halo exchange logic, and final gather phase do not alter the semantics of the simulation.
+
+## Validation Report
+
+The correctness of this MPI implementation of Conway's Game of Life was validated through deterministic pattern tests, boundary-condition checks, and comparisons between single-process and multi-process executions.
+
 
 ### Performance analysis (scalability study)
 

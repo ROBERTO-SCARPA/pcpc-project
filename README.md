@@ -281,9 +281,7 @@ A good sanity check is to compare the output of a single-process run against a m
 
 The following animation shows the evolution of Conway's Game of Life directly in the terminal during execution.
 
-<p align="center">
-  <img src="./assets/gamelife.gif" alt="Console demo of the MPI Game of Life execution" width="800">
-</p>
+![Console Demo] (images/gamelife.gif)
 
 ### Deterministic Execution Verification
 
